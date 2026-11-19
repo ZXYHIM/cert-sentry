@@ -1,6 +1,11 @@
 ---
 name: cert-sentry
+version: 1.0.0
+display_name: 证书哨兵
+display_name_en: cert-sentry
 description: 用大白话检查 HTTPS 站点的 TLS 证书健康度、新增或删除监控域名、解读告警并给出 Nginx 证书修复步骤。当用户提到"检查证书""证书快过期""SSL/TLS 到期""nginx 证书不一致""续签没生效""加个域名监控""看证书巡检结果"等场景时应使用本技能。仅检测启用 TLS 的站点（HTTPS），不处理明文 HTTP。
+description_zh: 用大白话检查 HTTPS 站点的 TLS 证书健康度，支持新增或删除监控域名、解读告警并给出 Nginx 证书修复步骤。适用于检查证书过期、SSL/TLS 到期、证书链不完整、续签后未 reload 等场景。仅检测启用 TLS 的站点（HTTPS）。
+description_en: Check TLS certificate health in plain language, add or remove monitored domains, interpret alerts and give Nginx certificate fix steps. Covers expiry, incomplete chains, and renew-without-reload issues. TLS-enabled sites (HTTPS) only.
 agent_created: true
 ---
 
