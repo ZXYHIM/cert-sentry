@@ -1,0 +1,25 @@
+{
+  "defaults": {
+    "port": 443,
+    "timeout": 10,
+    "warn_days": [30, 14, 7, 1]
+  },
+  "groups": [
+    {
+      "name": "production",
+      "owner": "me",
+      "hosts": ["example.com", "www.example.com"]
+    },
+    {
+      "name": "clients",
+      "owner": "agency",
+      "hosts": [
+        {
+          "host": "api.example.com",
+          "port": 443,
+          "note": "可选：填 nginx ssl_certificate 的实际路径，配合 --nginx-conf 做三方比对"
+        }
+      ]
+    }
+  ]
+}
