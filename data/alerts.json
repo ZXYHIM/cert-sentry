@@ -1,0 +1,5 @@
+[
+  { "level": "P0", "host": "old.example.com", "code": "nginx_cert_mismatch", "message": "磁盘证书与实际握手证书不一致：续签后可能没 reload，或路径指错" },
+  { "level": "P1", "host": "old.example.com", "code": "chain_incomplete", "message": "服务端只发了 leaf 证书，缺中间证书（浏览器会自动补链，但 curl / 部分客户端会报错）" },
+  { "level": "P1", "host": "api.example.com", "code": "expiring", "message": "证书将在 12 天后到期" }
+]

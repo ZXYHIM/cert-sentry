@@ -1,0 +1,8 @@
+services:
+  cert-sentry:
+    build: .
+    volumes:
+      - ./sites.json:/app/sites.json:ro
+      - ./data:/app/data
+    working_dir: /app
+    # 容器只跑一次；定时交给宿主机 cron / systemd timer 或 GitHub Actions

@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "port": 443,
+    "timeout": 10,
+    "warn_days": [30, 14, 7, 1]
+  },
+  "groups": [
+    {
+      "name": "production",
+      "owner": "me",
+      "hosts": ["example.com", "www.example.com"]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cert-sentry · 证书巡检看板</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --line: #e5e8ec; --text: #1f2329;
+    --muted: #6b7280; --ok: #0f6e56; --ok-bg: #e1f5ee;
+    --warn: #854f0b; --warn-bg: #faeeda; --bad: #a32d2d; --bad-bg: #fcebeb;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 20px 64px; background: var(--bg); color: var(--text);
+         font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .banner { background: var(--warn-bg); color: var(--warn); border: 1px solid #f0d9ad;
+            border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 20px; display: none; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .card .n { font-size: 26px; font-weight: 500; line-height: 1.2; }
+  .card .l { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+            padding: 18px; margin-bottom: 20px; }
+  h2 { font-size: 14px; font-weight: 500; margin: 0 0 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 400; font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 12px; }
+  .t-ok { background: var(--ok-bg); color: var(--ok); }
+  .t-warn { background: var(--warn-bg); color: var(--warn); }
+  .t-bad { background: var(--bad-bg); color: var(--bad); }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .empty { color: var(--muted); font-size: 13px; }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 28px; }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>cert-sentry · 证书巡检看板</h1>
+  <div class="sub" id="meta">加载中…</div>
+  <div class="banner" id="banner"></div>
+
+  <div class="cards" id="cards"></div>
+
+  <section>
+    <h2>站点状态</h2>
+    <table>
+      <thead><tr><th>端点</th><th>协议</th><th>分组</th><th>状态</th><th>剩余天数</th><th>链完整</th><th>Nginx 一致</th><th>到期时间</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>当前告警</h2>
+    <div id="alerts"></div>
+  </section>
+
+  <footer>只读看板 · 数据来自 <span class="mono">data/latest.json</span> · 探测失败本身也会告警 · 仅检测启用 TLS 的站点（HTTPS）</footer>
+</div>
+
+<script>
+const DEMO = {
+  demo: true,
+  generated_at: "2026-11-19T02:17:00Z",
+  summary: { total: 3, ok: 1, critical: 1, warning: 2, probe_error: 0 },
+  sites: [
+    { host: "shop.example.com", port: 443, tls_version: "TLSv1.3", group: "production", verdict: "ok", days_left: 63, chain_complete: true, nginx_cert_match: null, not_after: "2027-01-21T00:00:00Z" },
+    { host: "api.example.com", port: 443, tls_version: "TLSv1.3", group: "clients", verdict: "warning", days_left: 12, chain_complete: true, nginx_cert_match: true, not_after: "2026-12-01T00:00:00Z" },
+    { host: "old.example.com", port: 443, tls_version: "TLSv1.2", group: "clients", verdict: "invalid", days_left: 41, chain_complete: false, nginx_cert_match: false, not_after: "2026-12-30T00:00:00Z" }
+  ],
+  alerts: [
+    { level: "P0", host: "old.example.com", code: "nginx_cert_mismatch", message: "磁盘证书与实际握手证书不一致：续签后可能没 reload" },
+    { level: "P1", host: "old.example.com", code: "chain_incomplete", message: "服务端只发了 leaf 证书，缺中间证书" },
+    { level: "P1", host: "api.example.com", code: "expiring", message: "证书将在 12 天后到期" }
+  ]
+};
+
+function tag(verdict) {
+  const map = { ok: ["正常", "t-ok"], warning: ["注意", "t-warn"], unknown: ["未知", "t-warn"] };
+  const [label, cls] = map[verdict] || ["异常", "t-bad"];
+  return '<span class="tag ' + cls + '">' + label + "</span>";
+}
+function bool(v) {
+  if (v === null || v === undefined) return '<span style="color:var(--muted)">—</span>';
+  return v ? '<span style="color:var(--ok)">✓</span>' : '<span style="color:var(--bad)">✗</span>';
+}
+function endpoint(x) {
+  var port = x.port && x.port !== 443 ? ":" + x.port : "";
+  return "https://" + x.host + port;
+}
+function tls(x) {
+  if (!x.tls_version) return '<span style="color:var(--muted)">—</span>';
+  return x.tls_version.replace("TLSv", "TLS ");
+}
+function render(d) {
+  const s = d.summary || {};
+  document.getElementById("meta").textContent =
+    "最后巡检 " + (d.generated_at || "—") + " · 每 6 小时自动执行 · 只读";
+  if (d.demo) {
+    const b = document.getElementById("banner");
+    b.style.display = "block";
+    b.textContent = "当前为示例数据：直接以 file:// 打开页面时，浏览器会阻止读取 JSON。启用 GitHub Pages 后将显示真实巡检结果。";
+  }
+  const cards = [
+    ["站点总数", s.total || 0], ["正常", s.ok || 0],
+    ["严重告警", s.critical || 0], ["提醒", s.warning || 0], ["探测失败", s.probe_error || 0]
+  ];
+  document.getElementById("cards").innerHTML = cards.map(function (c) {
+    return '<div class="card"><div class="n">' + c[1] + '</div><div class="l">' + c[0] + "</div></div>";
+  }).join("");
+  document.getElementById("rows").innerHTML = (d.sites || []).map(function (x) {
+    return "<tr><td class='mono'>" + endpoint(x) + "</td><td class='mono'>" + tls(x) + "</td>" +
+      "<td>" + (x.group || "—") + "</td>" +
+      "<td>" + (x.verdict ? tag(x.verdict) : "—") + "</td>" +
+      "<td>" + (x.days_left === null || x.days_left === undefined ? "—" : x.days_left) + "</td>" +
+      "<td>" + bool(x.chain_complete) + "</td><td>" + bool(x.nginx_cert_match) + "</td>" +
+      "<td class='mono'>" + (x.not_after || "—") + "</td></tr>";
+  }).join("") || "<tr><td colspan='8' class='empty'>暂无数据</td></tr>";
+  const a = d.alerts || [];
+  document.getElementById("alerts").innerHTML = a.length
+    ? a.map(function (x) {
+        const cls = x.level === "P0" ? "t-bad" : "t-warn";
+        return "<div style='padding:8px 0;border-bottom:1px solid var(--line)'>" +
+          "<span class='tag " + cls + "'>" + x.level + "</span> " +
+          "<span class='mono'>" + x.host + "</span> — " + x.message + "</div>";
+      }).join("")
+    : "<div class='empty'>没有告警 ✓</div>";
+}
+fetch("./data/latest.json")
+  .then(function (r) { if (!r.ok) throw new Error("no data"); return r.json(); })
+  .then(render)
+  .catch(function () { render(DEMO); });
+</script>
+</body>
+</html>
