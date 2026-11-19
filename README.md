@@ -71,6 +71,12 @@ The script normally exits `0` even when it finds problems, so snapshots can stil
 
 The project focuses on certificate inspection; generic expiry reminders and uptime monitoring are out of scope. Alerts are delivered by email or a self-hosted webhook. Only probe hosts you own or are authorised to check.
 
+## Support
+
+If this project has helped you catch an issue early, consider supporting ongoing maintenance via [Afdian](https://afdian.com/a/certsentry).
+
+[![Support on Afdian](https://img.shields.io/badge/Support-Afdian-FF6B9D.svg)](https://afdian.com/a/certsentry)
+
 ## License
 
 MIT

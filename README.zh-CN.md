@@ -94,6 +94,12 @@ docker compose up --build
 
 本项目专注于证书巡检，不覆盖通用到期提醒与可用性监控。告警通过邮件或自建 webhook 发送。请仅检测自己拥有或已获得授权的主机。
 
+## 支持项目
+
+如果这个项目帮你提前发现过问题，欢迎通过[爱发电](https://afdian.com/a/certsentry)支持后续维护。
+
+[![Support on Afdian](https://img.shields.io/badge/Support-Afdian-FF6B9D.svg)](https://afdian.com/a/certsentry)
+
 ## 许可
 
 MIT License
