@@ -1,6 +1,6 @@
 {
-  "run_id": "2026-11-24T22:22:32Z",
-  "generated_at": "2026-11-24T22:22:32Z",
+  "run_id": "2026-11-25T08:25:44Z",
+  "generated_at": "2026-11-25T08:25:44Z",
   "summary": {
     "total": 2,
     "ok": 2,
@@ -15,18 +15,18 @@
       "port": 443,
       "ok": true,
       "verdict": "ok",
-      "days_left": 31,
-      "not_after": "2026-12-25T22:56:35Z",
+      "days_left": 89,
+      "not_after": "2027-02-22T23:53:08Z",
       "verify_ok": true,
       "verify_error": null,
       "chain_cert_count": 4,
       "chain_complete": true,
-      "cert_sha256": "85ca6ab068e9bcce88b6c4aa3c47f7d17228134a457f870d3800e6223a0df07a",
+      "cert_sha256": "56986996436e5efd8e9355479c92c97ac3a5c1d25699783239674cb44d0c5220",
       "nginx_cert_match": null,
       "tls_version": "TLSv1.3",
       "subject": "CN=example.com",
       "issuer": "C=US, O=SSL Corporation, CN=Cloudflare TLS Issuing ECC CA 3",
-      "checked_at": "2026-11-24T22:22:32Z"
+      "checked_at": "2026-11-25T08:25:44Z"
     },
     {
       "host": "www.example.com",
@@ -34,18 +34,18 @@
       "port": 443,
       "ok": true,
       "verdict": "ok",
-      "days_left": 31,
-      "not_after": "2026-12-25T22:56:35Z",
+      "days_left": 89,
+      "not_after": "2027-02-22T23:53:08Z",
       "verify_ok": true,
       "verify_error": null,
       "chain_cert_count": 4,
       "chain_complete": true,
-      "cert_sha256": "85ca6ab068e9bcce88b6c4aa3c47f7d17228134a457f870d3800e6223a0df07a",
+      "cert_sha256": "56986996436e5efd8e9355479c92c97ac3a5c1d25699783239674cb44d0c5220",
       "nginx_cert_match": null,
       "tls_version": "TLSv1.3",
       "subject": "CN=example.com",
       "issuer": "C=US, O=SSL Corporation, CN=Cloudflare TLS Issuing ECC CA 3",
-      "checked_at": "2026-11-24T22:22:32Z"
+      "checked_at": "2026-11-25T08:25:44Z"
     }
   ],
   "alerts": []
