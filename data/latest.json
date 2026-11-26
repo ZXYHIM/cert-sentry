@@ -1,6 +1,6 @@
 {
-  "run_id": "2026-11-25T21:38:31Z",
-  "generated_at": "2026-11-25T21:38:31Z",
+  "run_id": "2026-11-26T08:10:34Z",
+  "generated_at": "2026-11-26T08:10:34Z",
   "summary": {
     "total": 2,
     "ok": 2,
@@ -15,7 +15,7 @@
       "port": 443,
       "ok": true,
       "verdict": "ok",
-      "days_left": 89,
+      "days_left": 88,
       "not_after": "2027-02-22T23:53:08Z",
       "verify_ok": true,
       "verify_error": null,
@@ -26,7 +26,7 @@
       "tls_version": "TLSv1.3",
       "subject": "CN=example.com",
       "issuer": "C=US, O=SSL Corporation, CN=Cloudflare TLS Issuing ECC CA 3",
-      "checked_at": "2026-11-25T21:38:31Z"
+      "checked_at": "2026-11-26T08:10:33Z"
     },
     {
       "host": "www.example.com",
@@ -34,7 +34,7 @@
       "port": 443,
       "ok": true,
       "verdict": "ok",
-      "days_left": 89,
+      "days_left": 88,
       "not_after": "2027-02-22T23:53:08Z",
       "verify_ok": true,
       "verify_error": null,
@@ -45,7 +45,7 @@
       "tls_version": "TLSv1.3",
       "subject": "CN=example.com",
       "issuer": "C=US, O=SSL Corporation, CN=Cloudflare TLS Issuing ECC CA 3",
-      "checked_at": "2026-11-25T21:38:31Z"
+      "checked_at": "2026-11-26T08:10:34Z"
     }
   ],
   "alerts": []
